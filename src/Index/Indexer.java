@@ -29,7 +29,7 @@ public class Indexer {
 		= new HashMap<Integer, ArrayList<Integer>>();
 	public static HashMap<Long, ArrayList<Integer>> term2doclist
 		= new HashMap<Long, ArrayList<Integer>>();
-	private final static String root = "C:\\Users\\Steven\\workspace\\Assignment_3\\Html\\";
+	private final static String root = "Html\\";
 	
 	public static void ret_file(File to_read, Integer counter) throws FileNotFoundException {
 		ArrayList<Integer> termList = new ArrayList<Integer>(); //ArrayList of the terms that appear in a document
@@ -146,16 +146,16 @@ public class Indexer {
 					counter++;
 				}
 			
-			FileWriter term2TermIdWriter = new FileWriter("C:\\Users\\Steven\\workspace\\Assignment_3\\term2termid");
+			FileWriter term2TermIdWriter = new FileWriter("term2termid.index");
 			term2TermIdWriter.write(term2termid.toString().replace(",", "\n"));
 			term2TermIdWriter.close();
-			FileWriter termId2TermWriter = new FileWriter("C:\\Users\\Steven\\workspace\\Assignment_3\\termid2term");
+			FileWriter termId2TermWriter = new FileWriter("termid2term.index");
 			termId2TermWriter.write(termid2term.toString().replace(",", "\n"));
 			termId2TermWriter.close();
-			FileWriter docId2TermListWriter = new FileWriter("C:\\Users\\Steven\\workspace\\Assignment_3\\docid2termlist");
+			FileWriter docId2TermListWriter = new FileWriter("docid2termlist.index");
 			docId2TermListWriter.write(docid2termlist.toString().replace("],", "]\n"));
 			docId2TermListWriter.close();
-			FileWriter term2DocListWriter = new FileWriter("C:\\Users\\Steven\\workspace\\Assignment_3\\term2doclist");
+			FileWriter term2DocListWriter = new FileWriter("term2doclist.index");
 			term2DocListWriter.write(term2doclist.toString().replace("]", "]\n"));
 			term2DocListWriter.close();
 			/*

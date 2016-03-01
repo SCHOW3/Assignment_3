@@ -14,7 +14,7 @@ public class DocumentTermFrequency {
 		
 	try {
 		//FileReader docID2TermList = new FileReader("Tester.txt");
-		FileReader docID2TermList = new FileReader("docid2termlist");
+		FileReader docID2TermList = new FileReader("docid2termlist.index");
 		 BufferedReader bufferedReader = 
 	                new BufferedReader(docID2TermList); 
 		String line;

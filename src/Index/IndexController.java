@@ -44,7 +44,7 @@ public class IndexController {
 			}
 		}
 		FileWriter IndexedListWithWeightWriter =
-				new FileWriter("C:\\Users\\Steven\\workspace\\Assignment_3\\IndexedListWithWeight");
+				new FileWriter("IndexedListWithWeight.index");
 		IndexedListWithWeightWriter.write(IndexedListWithWeight.toString().replace(",", "\n"));
 		IndexedListWithWeightWriter.close();
 	}
