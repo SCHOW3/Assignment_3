@@ -16,7 +16,6 @@ public class IndexController {
 		= new HashMap<Long, HashMap<Long, Double>>();
 	
 	public static void main(String[] args) throws IOException, ParseException {
-		// TODO Auto-generated method stub
 		System.out.println("IndexController");
 		Indexer.runIndex();
 		HashMap<Long, Integer> totalWordFrequency = TotalTermFrequency.computeWeightedIndex();
