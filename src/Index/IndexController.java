@@ -17,7 +17,7 @@ public class IndexController {
 	
 	public static void main(String[] args) throws IOException, ParseException {
 		System.out.println("IndexController");
-		Indexer.runIndex();
+		Indexer.runIndex(100); // Changed. default value is -1, uses all docs
 		HashMap<Long, Integer> totalWordFrequency = TotalTermFrequency.computeWeightedIndex();
 		HashMap<Long, HashMap<Long, Integer>> wordFrequencyDocument = 
 				DocumentTermFrequency.computeWeightedIndex();

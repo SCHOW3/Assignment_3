@@ -81,6 +81,10 @@ public class Indexer {
 			JSONParser parser = new JSONParser();
 			Object raw_data = parser.parse(new FileReader("html_files.json"));
 			JSONObject jsonObjectData = (JSONObject) raw_data;
+			
+			if (limiter == -1) {
+				limiter = jsonObjectData.size();
+			}
 			for (int readingCounter = 0; readingCounter < limiter; readingCounter++){
 				JSONObject realData = (JSONObject) jsonObjectData.get(Integer.toString(readingCounter));
 				htmlString.add(((String) realData.get("file")));
@@ -95,7 +99,12 @@ public class Indexer {
 		return htmlString;
 	}
 	
+	// Making the default value of the first arguement to -1. -1: all docs are used
 	public static void runIndex() throws IOException, ParseException {
+		runIndex(-1);
+	}
+	
+	public static void runIndex(int numberOfDocsToIndex) throws IOException, ParseException {
 		/*
 		int counter = 0;
 		while (true){
@@ -138,8 +147,8 @@ public class Indexer {
 			}
 		}*/
 			
-				//Code for running it 100 times only.
-				ArrayList<String> fileList = obtain_url(100);
+				// If numberOfDocsToIndex is -1, the all docs are returned
+				ArrayList<String> fileList = obtain_url(numberOfDocsToIndex);
 				int counter = 0;
 				for(String file : fileList){
 					ret_file(new File(root + file), counter);
