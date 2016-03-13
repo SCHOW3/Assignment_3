@@ -11,14 +11,15 @@ import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.Set;
 
+import java.io.ObjectOutputStream;
+import java.io.FileOutputStream;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
-
 
 
 public class Indexer {
@@ -48,7 +49,8 @@ public class Indexer {
 						|| word.contains("_")|| word.contains("@")|| word.contains("#")
 						|| word.contains("$")|| word.contains("^")|| word.contains("&")
 						|| word.contains("{")|| word.contains("}")|| word.contains("/")
-						|| word.contains(")") || word.contains("(") || word.contains(":")){
+						|| word.contains(")") || word.contains("(") || word.contains(":")
+						|| (word == "")){
 					continue;
 				}
 					if (!term2termid.containsKey(word)){
@@ -80,13 +82,15 @@ public class Indexer {
 		try{
 			JSONParser parser = new JSONParser();
 			Object raw_data = parser.parse(new FileReader("html_files.json"));
-			JSONObject jsonObjectData = (JSONObject) raw_data;
+			JSONObject tableOfContents = (JSONObject) raw_data;
 			
 			if (limiter == -1) {
-				limiter = jsonObjectData.size();
+				limiter = tableOfContents.size();
 			}
+			System.out.println(limiter);
+			
 			for (int readingCounter = 0; readingCounter < limiter; readingCounter++){
-				JSONObject realData = (JSONObject) jsonObjectData.get(Integer.toString(readingCounter));
+				JSONObject realData = (JSONObject) tableOfContents.get(Integer.toString(readingCounter));
 				htmlString.add(((String) realData.get("file")));
 				docid2docname.put(readingCounter, (String) realData.get("file"));
 				readingCounter++;
@@ -104,94 +108,28 @@ public class Indexer {
 		runIndex(-1);
 	}
 	
-	public static void runIndex(int numberOfDocsToIndex) throws IOException, ParseException {
-		/*
+	public static void runIndex(int numberOfDocsToIndex) throws IOException, ParseException {			
+		
+		// If numberOfDocsToIndex is -1, the all docs are returned
+		ArrayList<String> fileList = obtain_url(numberOfDocsToIndex);
 		int counter = 0;
-		while (true){
-			try {
-				if(counter%100 == 0)
-				{
-					System.out.println("Counter: " + counter);
-				}
-					String file = obtain_url(root, counter);
-					if (file == "Not_valid"){
-						System.out.println("The file is not valid");
-						continue;
-					}
-					else{
-						ret_file(new File(root + file), counter);
-					}
-					counter++;
-				}
-			catch (NullPointerException e) {
-				System.out.println("Counter: "+ counter);
-				System.out.println("Unique words: " + term2termid.size());
-	
-				FileWriter term2TermIdWriter = new FileWriter("C:\\Users\\Chow Chow\\workspace\\Assignment_3\\term2termid");
-				term2TermIdWriter.write(term2termid.toString().replace("],", "]\n"));
-				term2TermIdWriter.close();
-				FileWriter termId2TermWriter = new FileWriter("C:\\Users\\Chow Chow\\workspace\\Assignment_3\\termid2term");
-				termId2TermWriter.write(term2termid.toString().replace("],", "]\n"));
-				termId2TermWriter.close();
-				FileWriter docId2TermListWriter = new FileWriter("C:\\Users\\Chow Chow\\workspace\\Assignment_3\\docid2termlist");
-				docId2TermListWriter.write(docid2termlist.toString().replace("],", "]\n"));
-				docId2TermListWriter.close();
-				FileWriter term2DocListWriter = new FileWriter("C:\\Users\\Chow Chow\\workspace\\Assignment_3\\term2doclist");
-				term2DocListWriter.write(term2doclist.toString().replace("]", "]\n"));
-				term2DocListWriter.close();
-				term2termid.clear();
-				termid2term.clear();
-				docid2termlist.clear();
-				term2doclist.clear();
-				break;
-			}
-		}*/
+		for(String file : fileList){
+			ret_file(new File(root + file), counter);
+			counter++;
+		}
 			
-				// If numberOfDocsToIndex is -1, the all docs are returned
-				ArrayList<String> fileList = obtain_url(numberOfDocsToIndex);
-				int counter = 0;
-				for(String file : fileList){
-					ret_file(new File(root + file), counter);
-					counter++;
-				}
-			
-			FileWriter term2TermIdWriter = new FileWriter("term2termid.index");
-			term2TermIdWriter.write(term2termid.toString().replace(",", "\n"));
-			term2TermIdWriter.close();
-			FileWriter termId2TermWriter = new FileWriter("termid2term.index");
-			termId2TermWriter.write(termid2term.toString().replace(",", "\n"));
-			termId2TermWriter.close();
-			FileWriter docId2TermListWriter = new FileWriter("docid2termlist.index");
-			docId2TermListWriter.write(docid2termlist.toString().replace("],", "]\n"));
-			docId2TermListWriter.close();
-			FileWriter term2DocListWriter = new FileWriter("term2doclist.index");
-			term2DocListWriter.write(term2doclist.toString().replace("]", "]\n"));
-			term2DocListWriter.close();
-			/*
-			term2termid.clear();
-			termid2term.clear();
-			docid2termlist.clear();
-			term2doclist.clear();
-			*/
-			
-			/*
-			JSONParser parser = new JSONParser();
-			Object raw_data = parser.parse(new FileReader("html_files.json"));
-			JSONObject jsonObjectData = (JSONObject) raw_data;
-			JSONObject realData = (JSONObject) jsonObjectData.get("0");
-			String file = (String) realData.get("file");
-			System.out.println(file);
-			ret_file(new File(root + file));
-
-			JSONArray array_json =  new JSONArray();
-			for(Object o : array_json){
-				JSONObject document = (JSONObject) o;
-				String docFile = (String) document.get("file");
-				System.out.println("File: " + docFile);
-			}
-			*/
-			//ret_file(new File("C:\\Users\\Chow Chow\\workspace\\Assignment_3\\Html\\access.ics.uci.educontact.html"));
-			//ret_file(new File("C:\\Users\\Chow Chow\\workspace\\Assignment_3\\Html\\access.ics.uci.eduindex.html"));
+		ObjectOutputStream term2TermIdWriter = new ObjectOutputStream(new FileOutputStream("term2termid.index"));
+		term2TermIdWriter.writeObject(term2termid);
+		term2TermIdWriter.close();
+		ObjectOutputStream termId2TermWriter = new ObjectOutputStream(new FileOutputStream("termid2term.index"));
+		termId2TermWriter.writeObject(termid2term);
+		termId2TermWriter.close();
+		ObjectOutputStream docId2TermListWriter = new ObjectOutputStream(new FileOutputStream("docid2termlist.index"));
+		docId2TermListWriter.writeObject(docid2termlist);
+		docId2TermListWriter.close();		
+		ObjectOutputStream term2DocListWriter = new ObjectOutputStream(new FileOutputStream("term2doclist.index"));
+		term2DocListWriter.writeObject(term2doclist);
+		term2DocListWriter.close();
 	}
 }
 
